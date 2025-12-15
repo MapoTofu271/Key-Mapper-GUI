@@ -1,0 +1,9 @@
+.root {
+    -fx-background-color: transparent;
+    -fx-border-color:green;
+    -fx-border-width:3
+}
+
+.menu-button {
+    -fx-opacity: 1.0;
+}
