@@ -20,7 +20,7 @@ import java.util.function.Function;
 interface ClickView {
     KeyPos Delta = new KeyPos(0,0);
     KeyPos eventPos = new KeyPos(0,0);
-    default void initShape(Key key, Function<KeyPos, Shape> shapeFactory) {
+    default void initShape(Key key,StackPane stackPane, Function<KeyPos, Shape> shapeFactory) {
 //        Circle circle = new Circle();
 //        circle.setFill(Color.WHITE);
 //        circle.setCenterX(keyInitPos.getX());
@@ -32,8 +32,6 @@ interface ClickView {
         KeyPos keyInitPos = key.getPos().convertToRealCoordinates();
         Shape shape = shapeFactory.apply(key.getPos().convertToRealCoordinates());
         shape.setCursor(Cursor.HAND);
-        shape.setFill(Color.WHITE);
-        StackPane stackPane = new StackPane();
         Text textInCircle = new Text(key.getKey().get());
         textInCircle.textProperty().bind(key.getKey());
         stackPane.setLayoutX(keyInitPos.getX());
@@ -72,7 +70,6 @@ interface ClickView {
             handleMouseRelease(stackPane);
         });
         stackPane.getChildren().addAll(shape, textInCircle);
-        stackPane.setMaxSize(((Circle) shape).getRadius(), ((Circle) shape).getRadius());
         Pane pane = getPane();
         pane.getChildren().add(stackPane);
     }

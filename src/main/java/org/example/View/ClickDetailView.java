@@ -40,10 +40,14 @@ interface ClickDetailView {
         return menuPane;
     }
     default VBox initMenuComponentsView() {
-        VBox childView = new VBox();
+        VBox childView = new VBox(6);
         childView.getChildren().add(createCommentBox());
         childView.getChildren().add(createKeyAssignBox());
+        addAnotherChildComponent(childView);
         return childView;
+    }
+    default void addAnotherChildComponent(VBox childView) {
+
     }
     default Node createCommentBox() {
         return new HBox(6, createLabel("Comment: "), initCommentTextField());

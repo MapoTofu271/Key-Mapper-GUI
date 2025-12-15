@@ -12,7 +12,7 @@ import javafx.scene.paint.Color;
 
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.example.View.KMTCLickMultiViewImpl;
+import org.example.View.KMTClickMultiViewImpl;
 import org.example.View.KMTClickViewImpl;
 import org.example.model.KMTClick;
 import org.example.model.KMTClickMulti;
@@ -76,7 +76,7 @@ public class Main extends Application {
         addButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                KMTCLickMultiViewImpl kmtcLickMultiView = new KMTCLickMultiViewImpl(new KMTClickMulti());
+                KMTClickMultiViewImpl kmtcLickMultiView = new KMTClickMultiViewImpl(new KMTClickMulti());
                 keyField.getChildren().add(kmtcLickMultiView.viewRender());
             }
         });

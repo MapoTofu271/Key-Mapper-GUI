@@ -3,7 +3,9 @@ package org.example.View;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 import org.example.key_mapper_gui.Main;
@@ -21,11 +23,14 @@ public class KMTClickViewImpl implements ClickView, ClickDetailView {
 
     public KMTClickViewImpl(KMTClick kmtClick) {
         this.kmtClick = kmtClick;
-        this.initShape(kmtClick, keyPos -> {
+        StackPane stackPane = new StackPane();
+        this.initShape(kmtClick, stackPane, keyPos -> {
             Circle circle = new Circle();
             circle.setCenterX(keyPos.getX());
             circle.setCenterY(keyPos.getY());
             circle.setRadius(40f);
+            circle.setFill(Color.WHITE);
+            stackPane.setMaxSize(circle.getRadius(), circle.getRadius());
             return circle;
         });
         this.keyService = new KeyService();
