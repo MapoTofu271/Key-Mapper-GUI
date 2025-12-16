@@ -13,14 +13,15 @@ public class KeyPos {
         this.y = corrdY;
     }
 
-    public KeyPos convertToRealCoordinates() {
+    public static KeyPos convertToRealCoordinates(double x, double y) {
         return new KeyPos(x*SCREEN_WIDTH, y*SCREEN_HEIGHT);
     }
-    public KeyPos convertToRatio(double coordX, double coordY) {
+    public static KeyPos convertToRatio(double coordX, double coordY) {
         DecimalFormat numberFormat = new DecimalFormat("#.00");
         return new KeyPos(Double.parseDouble(numberFormat.format(coordX / SCREEN_WIDTH)),
                 Double.parseDouble(numberFormat.format(coordY/SCREEN_HEIGHT)));
     }
+
     public void setX(double x) {
         this.x = x;
     }

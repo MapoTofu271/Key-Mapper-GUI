@@ -12,11 +12,13 @@ import javafx.scene.paint.Color;
 
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.example.View.KMTClickMultiViewImpl;
 import org.example.View.KMTClickViewImpl;
+import org.example.View.KeyViewImpl;
+import org.example.key_mapper_gui.viewModel.KMTClickViewModel;
 import org.example.model.KMTClick;
 import org.example.model.KMTClickMulti;
 import org.example.model.Key;
+import org.example.model.KeyPos;
 import org.example.service.KeyExportService;
 import org.example.service.KeyLoadService;
 
@@ -40,7 +42,7 @@ public class Main extends Application {
         stage.initStyle(StageStyle.TRANSPARENT);
         stage.show();
     }
-    public static Pane keyField = new Pane();
+    public Pane keyField = new Pane();
 
     private Region createContent() {
         keyField.getChildren().add(createMenu());
@@ -49,7 +51,7 @@ public class Main extends Application {
     }
 
     private Node createMenu() {
-        HBox menu = new HBox(10, addKMTClickButton(), addKMTClickMultiButton(), exportDataButton(), loadKeyDataButton(), deleteAllKeysButton());
+        HBox menu = new HBox(10, addKMTClickButton(), exportDataButton(), loadKeyDataButton(), deleteAllKeysButton());
         menu.setPrefHeight(50);
         menu.setMaxWidth(500);
         menu.getStyleClass().add("menu");
@@ -64,24 +66,24 @@ public class Main extends Application {
         addButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                KMTClickViewImpl kmtClickView = new KMTClickViewImpl(new KMTClick());
-                keyField.getChildren().add(kmtClickView.viewRender());
+                KMTClickViewImpl kmtClickView = new KMTClickViewImpl(new KMTClickViewModel(new KMTClick()));
+                keyField.getChildren().add(kmtClickView);
             }
         });
         return addButton;
     }
-    private Node addKMTClickMultiButton() {
-        Button addButton = new Button("Add KMTMulti Click");
-        addButton.getStyleClass().add("menu-button");
-        addButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                KMTClickMultiViewImpl kmtcLickMultiView = new KMTClickMultiViewImpl(new KMTClickMulti());
-                keyField.getChildren().add(kmtcLickMultiView.viewRender());
-            }
-        });
-        return addButton;
-    }
+//    private Node addKMTClickMultiButton() {
+//        Button addButton = new Button("Add KMTMulti Click");
+//        addButton.getStyleClass().add("menu-button");
+//        addButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+//            @Override
+//            public void handle(MouseEvent mouseEvent) {
+//                KMTClickMultiViewImpl kmtcLickMultiView = new KMTClickMultiViewImpl(new KMTClickMulti());
+//                keyField.getChildren().add(kmtcLickMultiView.viewRender());
+//            }
+//        });
+//        return addButton;
+//    }
     private Node exportDataButton() {
         Button exportButton = new Button("Export");
         exportButton.getStyleClass().add("menu-button");
@@ -106,8 +108,8 @@ public class Main extends Application {
                 try {
                     KMTClick[] test = KeyLoadService.loadKeyFromFile();
                     for(KMTClick click : test) {
-                        KMTClickViewImpl kmtClickView = new KMTClickViewImpl(click);
-                        keyField.getChildren().add(kmtClickView.viewRender());
+                        KMTClickViewImpl kmtClickView = new KMTClickViewImpl(new KMTClickViewModel(click));
+                        keyField.getChildren().add(kmtClickView);
                     }
                 } catch (IOException e) {
                     throw new RuntimeException(e);

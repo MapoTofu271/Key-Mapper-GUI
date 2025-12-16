@@ -5,22 +5,22 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public abstract class Key {
-    private StringProperty comment = new SimpleStringProperty("");
-    private StringProperty key = new SimpleStringProperty("");
+    private String comment;
+    private String key;
     private KeyPos pos = new KeyPos(0.5,0.5);
 
 
     public void setComment(String comment) {
-        this.comment.set(comment);
+        this.comment = (comment);
     }
-    public StringProperty getComment() {
+    public String getComment() {
         return comment;
     }
     public void setKey(String key) {
-        this.key.set(key);
+        this.key = (key);
     }
 
-    public StringProperty getKey() {
+    public String getKey() {
         return key;
     }
 
@@ -31,6 +31,6 @@ public abstract class Key {
         this.pos = pos;
     }
     public String keyMapGenerated() {
-        return comment.get() + key.get();
+        return comment + key;
     }
 }
