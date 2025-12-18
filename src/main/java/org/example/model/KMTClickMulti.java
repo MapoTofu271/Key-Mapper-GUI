@@ -4,7 +4,7 @@ import java.util.List;
 
 public class KMTClickMulti extends Key {
     private String type = "-KMT_CLICK_MULTI";
-    private int delay;
+    private int delay = 100;
 
     public KMTClickMulti() {}
 

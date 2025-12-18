@@ -7,37 +7,42 @@ import org.example.model.Key;
 import org.example.model.KeyPos;
 import org.example.service.KeyService;
 
+import java.util.UUID;
+
 public class KeyViewModel {
     private Key domainKey;
+    private final UUID keyID = UUID.randomUUID();
     private final KeyService keyService = new KeyService();
     private final StringProperty keyComment = new SimpleStringProperty();
     private final StringProperty keyAssigned = new SimpleStringProperty();
     private final BooleanProperty visibility = new SimpleBooleanProperty(false);
-    private final ObjectProperty<KeyPos> keyPos = new SimpleObjectProperty<>();
+    private final ObjectProperty<KeyPos> keyPosition = new SimpleObjectProperty<>();
     public KeyViewModel(Key key) {
         this.domainKey = key;
-        bindFromDomain(key);
     }
 
-    public Shape createShape(KeyPos keyPos) {
-        KeyPos realPos = KeyPos.convertToRealCoordinates(keyPos.getX(), keyPos.getY());
+    public void viewModelInit() {
+        loadFromDomain();
+    }
+
+    public Shape createShape() {
         return new Circle(20f);
     }
-    private void bindFromDomain(Key key) {
-        keyComment.set(key.getComment());
-        keyAssigned.set(key.getKey());
-        keyPos.set(key.getPos());
+    public void loadFromDomain() {
+        keyComment.set(domainKey.getComment());
+        keyAssigned.set(domainKey.getKey());
+        keyPosition.set(domainKey.getPos());
     }
 
-    public void savedChanged() {
+    public void savedChanges() {
         domainKey.setKey(keyAssigned.get());
         domainKey.setComment(keyComment.get());
     }
 
     public void updatedDragCoords(double x, double y) {
         KeyPos newCoords = KeyPos.convertToRatio(x, y);
-        keyPos.set(newCoords);
-        domainKey.setPos(keyPos.get());
+        keyPosition.set(newCoords);
+        domainKey.setPos(keyPosition.get());
     }
     public void showDetailsMenu() {
         visibility.set(true);
@@ -51,7 +56,9 @@ public class KeyViewModel {
     public Key getDomainKey() {
         return domainKey;
     }
-
+    public void setDomainKey(Key key) {
+        this.domainKey = key;
+    }
     public StringProperty getKeyAssigned() {
         return keyAssigned;
     }
@@ -60,8 +67,14 @@ public class KeyViewModel {
         return keyComment;
     }
 
-    public ObjectProperty<KeyPos> getKeyPosObjectPropertyProperty() {
-        return keyPos;
+    public UUID getKeyID() {
+        return keyID;
+    }
+    public ObjectProperty<KeyPos> getKeyPosition() {
+        return keyPosition;
+    }
+    public double getOffset() {
+        return 20;
     }
 
 }

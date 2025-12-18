@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -20,25 +21,26 @@ import org.example.model.KeyPos;
 
 public class KeyViewImpl extends StackPane{
     private final KeyViewModel keyViewModel;
-    private VBox detailsPane;
     private KeyPos eventPos = new KeyPos(0, 0);
     private KeyPos Delta = new KeyPos(0, 0);
 
     public KeyViewImpl(KeyViewModel keyViewModel) {
         this.keyViewModel = keyViewModel;
+    }
+    public void viewInit() {
         setUpUI();
         eventHandler();
     }
     private void setUpUI() {
-        KeyPos viewModel = keyViewModel.getKeyPosObjectPropertyProperty().get();
+        KeyPos viewModel = keyViewModel.getKeyPosition().get();
         KeyPos realPos = KeyPos.convertToRealCoordinates(viewModel.getX(), viewModel.getY());
-        Shape shape = keyViewModel.createShape(realPos);
+        Shape shape = keyViewModel.createShape();
         Text text = new Text();
         text.textProperty().bindBidirectional(keyViewModel.getKeyAssigned());
-        this.setLayoutX(realPos.getX());
-        this.setLayoutY(realPos.getY());
+        this.setLayoutX(realPos.getX()- keyViewModel.getOffset());
+        this.setLayoutY(realPos.getY()- keyViewModel.getOffset());
         this.getChildren().addAll(shape, text);
-        detailsPane = createDetailsPane();
+        this.setStyle("-fx-background-color: green");
     }
     private void eventHandler() {
         this.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -47,6 +49,8 @@ public class KeyViewImpl extends StackPane{
                 if(mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
                     if(mouseEvent.getClickCount() == 2) {
                         keyViewModel.showDetailsMenu();
+                        System.out.println(keyViewModel.getKeyPosition().get().getX() + " " +
+                        keyViewModel.getKeyPosition().get().getY());
                     }
                 }
             }
@@ -64,22 +68,12 @@ public class KeyViewImpl extends StackPane{
 
             eventPos.setX(dragEvent.getSceneX());
             eventPos.setY(dragEvent.getSceneY());
+
+            keyViewModel.updatedDragCoords(dragEvent.getSceneX(), dragEvent.getSceneY());
         });
-
     }
-    public VBox createDetailsPane() {
-        VBox pane = new VBox(6);
-        pane.setMaxWidth(100);
-        pane.setMaxHeight(50);
-        TextField commentField = new TextField();
-        commentField.textProperty().bindBidirectional(keyViewModel.getKeyComment());
-        TextField keyAssignField = new TextField();
-        keyAssignField.textProperty().bindBidirectional(keyViewModel.getKeyAssigned());
 
-        pane.getChildren().add(new HBox(new Label("Comment: "), commentField));
-        pane.getChildren().add(new HBox(new Label("Key: "), keyAssignField));
-        pane.visibleProperty().bind(keyViewModel.getVisibility());
-
-        return pane;
+    public KeyViewModel getKeyViewModel() {
+        return keyViewModel;
     }
 }
