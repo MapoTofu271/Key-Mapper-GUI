@@ -35,7 +35,9 @@ public class KeyViewImpl extends StackPane{
         KeyPos viewModel = keyViewModel.getKeyPosition().get();
         KeyPos realPos = KeyPos.convertToRealCoordinates(viewModel.getX(), viewModel.getY());
         Shape shape = keyViewModel.createShape();
-        Text text = new Text();
+        TextField text = new TextField();
+        text.setPrefHeight(15);
+        text.setMaxWidth(30);
         text.textProperty().bindBidirectional(keyViewModel.getKeyAssigned());
         this.setLayoutX(realPos.getX()- keyViewModel.getOffset());
         this.setLayoutY(realPos.getY()- keyViewModel.getOffset());

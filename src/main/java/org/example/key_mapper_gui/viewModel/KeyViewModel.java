@@ -1,6 +1,7 @@
 package org.example.key_mapper_gui.viewModel;
 
 import javafx.beans.property.*;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 import org.example.model.Key;
@@ -17,8 +18,18 @@ public class KeyViewModel {
     private final StringProperty keyAssigned = new SimpleStringProperty();
     private final BooleanProperty visibility = new SimpleBooleanProperty(false);
     private final ObjectProperty<KeyPos> keyPosition = new SimpleObjectProperty<>();
+
+    private final DoubleProperty xLayout = new SimpleDoubleProperty();
+    private final DoubleProperty yLayout = new SimpleDoubleProperty();
     public KeyViewModel(Key key) {
         this.domainKey = key;
+        keyPosition.addListener((obs, oldPos, newPos) -> {
+            if (newPos != null) {
+                KeyPos realPos = KeyPos.convertToRealCoordinates(domainKey.getPos().getX(), domainKey.getPos().getY());
+                xLayout.set(realPos.getX() + 60);
+                yLayout.set(realPos.getY() - 20);
+            }
+        });
     }
 
     public void viewModelInit() {
@@ -77,4 +88,10 @@ public class KeyViewModel {
         return 20;
     }
 
+    public DoubleProperty getxLayout() {
+        return xLayout;
+    }
+    public DoubleProperty getyLayout() {
+        return yLayout;
+    }
 }

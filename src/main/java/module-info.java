@@ -10,6 +10,7 @@ module org.example.model {
     opens org.example.key_mapper_gui to javafx.fxml;
     exports org.example.key_mapper_gui;
     exports org.example.model;
+    exports org.example.key_mapper_gui.viewModel;
 
 }
 

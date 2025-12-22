@@ -1,5 +1,8 @@
 package org.example.key_mapper_gui;
 import javafx.application.Application;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -16,6 +19,7 @@ import javafx.stage.StageStyle;
 import javafx.util.converter.NumberStringConverter;
 import org.example.View.KMTClickMultiViewImpl;
 import org.example.View.KMTClickViewImpl;
+import org.example.View.KeyViewImpl;
 import org.example.key_mapper_gui.viewModel.KMTClickMultiViewModel;
 import org.example.key_mapper_gui.viewModel.KMTClickViewModel;
 import org.example.key_mapper_gui.viewModel.KeyViewModel;
@@ -33,7 +37,7 @@ public class Main extends Application {
     public static final long SCREEN_MAX_WIDTH = 1600;
     public static final HashMap<String, Key> keyMap = new HashMap<>();
     private Pane keyField = new Pane();
-    private VBox keyDetails;
+    private static VBox keyDetails;
     public static void main(String[] args) {
         launch();
     }
@@ -64,15 +68,19 @@ public class Main extends Application {
 
     private Node createDetailsPane(KeyViewModel keyViewModel) {
         VBox pane = new VBox(6);
-        pane.setMaxWidth(200);
-        pane.setMaxHeight(500);
+
+        //Set bind with the model position
+        pane.layoutXProperty().bind(keyViewModel.getxLayout());
+        pane.layoutYProperty().bind(keyViewModel.getyLayout());
+        System.out.println(pane.getLayoutX());
+        System.out.println(pane.getLayoutY());
         pane.setStyle("-fx-background-color: white");
         TextField commentField = new TextField();
         commentField.textProperty().bindBidirectional(keyViewModel.getKeyComment());
         TextField keyAssignField = new TextField();
         keyAssignField.textProperty().bindBidirectional(keyViewModel.getKeyAssigned());
         pane.getChildren().add(new HBox(new Label("Comment: "), commentField));
-        pane.getChildren().add(new HBox(new Label("Key: "), keyAssignField));
+        pane.getChildren().add(new HBox(new Label("Key    : "), keyAssignField));
         pane.visibleProperty().bind(keyViewModel.getVisibility());
         pane.setOnKeyPressed(keyEvent -> {
             if(keyEvent.getCode() == KeyCode.ENTER) {
@@ -134,7 +142,6 @@ public class Main extends Application {
         });
         return addButton;
     }
-
     private Node exportDataButton() {
         Button exportButton = new Button("Export");
         exportButton.getStyleClass().add("menu-button");
@@ -173,6 +180,7 @@ public class Main extends Application {
     private Node deleteAllKeysButton() {
         Button deleteAllButton = new Button("Delete");
         deleteAllButton.getStyleClass().add("menu-button");
+        keyField.getChildren().removeAll();
         return deleteAllButton;
     }
     private void addAnotherField(VBox vBox, KeyViewModel viewModel) {
@@ -182,7 +190,12 @@ public class Main extends Application {
             vBox.getChildren().add(new HBox(new Label("Delay: "), delayField));
         }
         if(viewModel instanceof KMTClickViewModel) {
-
         }
+    }
+    public void createKey(KeyViewImpl keyView) {
+        keyView.getKeyViewModel().viewModelInit();
+        keyView.viewInit();
+        keyDetails = (VBox) createDetailsPane(keyView.getKeyViewModel());
+        keyField.getChildren().addAll(keyView, keyDetails);
     }
 }
