@@ -2,8 +2,6 @@ package org.example.service;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.View.KeyViewImpl;
-import org.example.key_mapper_gui.Main;
 import org.example.key_mapper_gui.repository.KeyStorage;
 import org.example.model.KMTClick;
 import org.example.model.Key;
@@ -12,11 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.*;
 
 public class KeyService{
     private final KeyStorage keyStorage;
@@ -30,9 +24,12 @@ public class KeyService{
         keyStorage.getKeyMapNodes().remove(key.getKeyID());
     }
     public void deleteAll() {
-        for(UUID keyId : keyStorage.getKeyMapNodes().keySet()) {
-            keyStorage.getKeyMapNodes().remove(keyId);
-        }
+        keyStorage.getKeyMapNodes().clear();
+//        Iterator<Map.Entry<UUID, Key>> it = keyStorage.getKeyMapNodes().entrySet().iterator();
+//        while (it.hasNext()) {
+//            Map.Entry item = it.next();
+//            it.remove();
+//        }
     }
     public int getDataSize() {
         return keyStorage.getKeyMapNodes().size();

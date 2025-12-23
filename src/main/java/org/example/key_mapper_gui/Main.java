@@ -214,6 +214,8 @@ public class Main extends Application {
                 }
                 keyField.getChildren().removeAll(deleteKey);
                 appModel.deleteAllButton();
+
+
             }
         });
         return deleteAllButton;
