@@ -35,12 +35,13 @@ public class KeyViewImpl extends StackPane{
         KeyPos viewModel = keyViewModel.getKeyPosition().get();
         KeyPos realPos = KeyPos.convertToRealCoordinates(viewModel.getX(), viewModel.getY());
         Shape shape = keyViewModel.createShape();
+        shape.setOpacity(0.7);
         Text text = new Text();
         text.textProperty().bindBidirectional(keyViewModel.getKeyAssigned());
         this.setLayoutX(realPos.getX()- keyViewModel.getOffset());
         this.setLayoutY(realPos.getY()- keyViewModel.getOffset());
         this.getChildren().addAll(shape, text);
-        this.setStyle("-fx-background-color: green");
+        this.setStyle("-fx-background-color: transparent");
     }
     private void eventHandler() {
         this.setOnMouseClicked(new EventHandler<MouseEvent>() {

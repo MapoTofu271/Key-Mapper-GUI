@@ -1,10 +1,6 @@
 package org.example.key_mapper_gui;
 import javafx.application.Application;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -22,14 +18,14 @@ import javafx.util.converter.NumberStringConverter;
 import org.example.View.KMTClickMultiViewImpl;
 import org.example.View.KMTClickViewImpl;
 import org.example.View.KeyViewImpl;
+import org.example.key_mapper_gui.viewModel.AppViewModel;
 import org.example.key_mapper_gui.viewModel.KMTClickMultiViewModel;
 import org.example.key_mapper_gui.viewModel.KMTClickViewModel;
 import org.example.key_mapper_gui.viewModel.KeyViewModel;
 import org.example.model.KMTClick;
 import org.example.model.KMTClickMulti;
 import org.example.model.Key;
-import org.example.service.KeyExportService;
-import org.example.service.KeyLoadService;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +33,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Main extends Application {
+    public static final AppViewModel appModel = new AppViewModel();
     public static final long SCREEN_MAX_HEIGHT = 900;
     public static final long SCREEN_MAX_WIDTH = 1600;
     public static final HashMap<String, Key> keyMap = new HashMap<>();
@@ -68,7 +65,7 @@ public class Main extends Application {
     }
 
     private Node createMenu() {
-        HBox menu = new HBox(10, addKMTClickButton(), addKMTClickMultiButton(), exportDataButton(), loadKeyDataButton(), deleteAllKeysButton());
+        HBox menu = new HBox(10, addKMTClickButton(), addKMTClickMultiButton(), exportDataButton(), loadKeyDataButton(), deleteAllKeysButton(), showTheDataButton());
         menu.setMaxHeight(50);
         menu.setMaxWidth(500);
         menu.getStyleClass().add("menu");
@@ -96,6 +93,7 @@ public class Main extends Application {
         pane.setOnKeyPressed(keyEvent -> {
             if(keyEvent.getCode() == KeyCode.ENTER) {
                 keyViewModel.hideDetailsMenu();
+                keyViewModel.savedChanges();
             }
         });
 //        pane.getChildren().add(addAnotherField(keyViewModel));
@@ -106,6 +104,7 @@ public class Main extends Application {
         savedButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
+                keyViewModel.savedChanges();
                 keyViewModel.hideDetailsMenu();
             }
         });
@@ -160,7 +159,7 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 try {
-                    KeyExportService.exportToJSONFile();
+                    appModel.exportData();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -175,7 +174,7 @@ public class Main extends Application {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 try {
-                    KMTClick[] test = KeyLoadService.loadKeyFromFile();
+                    KMTClick[] test = (KMTClick[]) appModel.loadKeyData();
                     for(KMTClick click : test) {
                         KMTClickViewImpl kmtClickView = new KMTClickViewImpl(new KMTClickViewModel(click));
                         createKey(kmtClickView);
@@ -186,6 +185,20 @@ public class Main extends Application {
             }
         });
         return loadButton;
+    }
+    private Node showTheDataButton() {
+        Button showData = new Button("Show data size");
+        showData.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                try {
+                    appModel.printData();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        return showData;
     }
     private Node deleteAllKeysButton() {
         Button deleteAllButton = new Button("Delete");
@@ -200,6 +213,7 @@ public class Main extends Application {
                     }
                 }
                 keyField.getChildren().removeAll(deleteKey);
+                appModel.deleteAllButton();
             }
         });
         return deleteAllButton;

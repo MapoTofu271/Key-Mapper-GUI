@@ -2,17 +2,19 @@ package org.example.key_mapper_gui.viewModel;
 
 import javafx.beans.property.*;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
+import org.example.key_mapper_gui.repository.KeyStorage;
 import org.example.model.Key;
 import org.example.model.KeyPos;
 import org.example.service.KeyService;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 public class KeyViewModel {
     private Key domainKey;
-    private final UUID keyID = UUID.randomUUID();
     private final KeyService keyService = new KeyService();
     private final StringProperty keyComment = new SimpleStringProperty();
     private final StringProperty keyAssigned = new SimpleStringProperty();
@@ -31,13 +33,13 @@ public class KeyViewModel {
             }
         });
     }
-
     public void viewModelInit() {
         loadFromDomain();
+        keyService.updateKey(domainKey);
     }
 
     public Shape createShape() {
-        return new Circle(20f);
+        return new Circle(10f, Color.TRANSPARENT);
     }
     public void loadFromDomain() {
         keyComment.set(domainKey.getComment());
@@ -48,13 +50,16 @@ public class KeyViewModel {
     public void savedChanges() {
         domainKey.setKey(keyAssigned.get());
         domainKey.setComment(keyComment.get());
+        keyService.updateKey(domainKey);
     }
 
     public void updatedDragCoords(double x, double y) {
         KeyPos newCoords = KeyPos.convertToRatio(x, y);
         keyPosition.set(newCoords);
         domainKey.setPos(keyPosition.get());
+        keyService.updateKey(domainKey);
     }
+
     public void showDetailsMenu() {
         visibility.set(true);
     }
@@ -78,9 +83,6 @@ public class KeyViewModel {
         return keyComment;
     }
 
-    public UUID getKeyID() {
-        return keyID;
-    }
     public ObjectProperty<KeyPos> getKeyPosition() {
         return keyPosition;
     }

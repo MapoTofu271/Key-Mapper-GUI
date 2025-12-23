@@ -1,10 +1,12 @@
 package org.example.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.List;
 
 public class KMTClickMulti extends Key {
     private String type = "-KMT_CLICK_MULTI";
-    private int delay = 100;
+    private int delay = 100;       //DEFAULT value
 
     public KMTClickMulti() {}
 

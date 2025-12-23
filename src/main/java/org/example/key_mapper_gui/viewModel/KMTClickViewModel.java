@@ -15,6 +15,6 @@ public class KMTClickViewModel extends KeyViewModel {
     }
     @Override
     public Shape createShape() {
-        return new Circle(40f, Color.WHITE);
+        return new Circle(25f, Color.WHITE);
     }
 }

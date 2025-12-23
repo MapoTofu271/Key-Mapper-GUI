@@ -7,6 +7,7 @@ module org.example.model {
     requires java.desktop;
     requires com.fasterxml.jackson.databind;
 
+    opens org.example.model to com.fasterxml.jackson.databind;
     opens org.example.key_mapper_gui to javafx.fxml;
     exports org.example.key_mapper_gui;
     exports org.example.model;
