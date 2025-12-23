@@ -6,12 +6,13 @@ import javafx.scene.shape.Shape;
 import org.example.model.KMTClick;
 
 public class KMTClickViewModel extends KeyViewModel {
+
     public KMTClickViewModel(KMTClick key) {
         super(key);
     }
     @Override
     public double getOffset() {
-        return 40;
+        return 25;
     }
     @Override
     public Shape createShape() {
