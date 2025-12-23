@@ -4,11 +4,13 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
@@ -29,13 +31,16 @@ import org.example.model.Key;
 import org.example.service.KeyExportService;
 import org.example.service.KeyLoadService;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 public class Main extends Application {
     public static final long SCREEN_MAX_HEIGHT = 900;
     public static final long SCREEN_MAX_WIDTH = 1600;
     public static final HashMap<String, Key> keyMap = new HashMap<>();
+    private SplitPane appPane = new SplitPane();
     private Pane keyField = new Pane();
     private static VBox keyDetails;
     public static void main(String[] args) {
@@ -43,7 +48,7 @@ public class Main extends Application {
     }
     @Override
     public void start(Stage stage) throws IOException {
-        Scene scene = new Scene(createContent(), 1600,900);
+        Scene scene = new Scene(createContent(), SCREEN_MAX_WIDTH,SCREEN_MAX_HEIGHT);
         stage.setScene(scene);
         scene.setFill(Color.TRANSPARENT);
         stage.initStyle(StageStyle.TRANSPARENT);
@@ -51,14 +56,20 @@ public class Main extends Application {
     }
 
     private Region createContent() {
+//        appPane.setStyle("-fx-background-color: transparent");
+//        appPane.setOrientation(Orientation.VERTICAL);
+//        appPane.getItems().addAll(createMenu(), keyField);
+//
+//        appPane.setDividerPosition(0, 0.03);
         keyField.getChildren().add(createMenu());
+        keyField.setStyle("-fx-background-color: transparent");
         keyField.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/org/example/key_mapper_gui/css/key_mapper.css")).toExternalForm());
         return keyField;
     }
 
     private Node createMenu() {
         HBox menu = new HBox(10, addKMTClickButton(), addKMTClickMultiButton(), exportDataButton(), loadKeyDataButton(), deleteAllKeysButton());
-        menu.setPrefHeight(50);
+        menu.setMaxHeight(50);
         menu.setMaxWidth(500);
         menu.getStyleClass().add("menu");
         menu.setAlignment(Pos.CENTER);
@@ -68,7 +79,7 @@ public class Main extends Application {
 
     private Node createDetailsPane(KeyViewModel keyViewModel) {
         VBox pane = new VBox(6);
-
+        pane.toFront();
         //Set bind with the model position
         pane.layoutXProperty().bind(keyViewModel.getxLayout());
         pane.layoutYProperty().bind(keyViewModel.getyLayout());
@@ -167,8 +178,7 @@ public class Main extends Application {
                     KMTClick[] test = KeyLoadService.loadKeyFromFile();
                     for(KMTClick click : test) {
                         KMTClickViewImpl kmtClickView = new KMTClickViewImpl(new KMTClickViewModel(click));
-                        kmtClickView.getKeyViewModel().viewModelInit();
-                        keyField.getChildren().add(kmtClickView);
+                        createKey(kmtClickView);
                     }
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -180,7 +190,18 @@ public class Main extends Application {
     private Node deleteAllKeysButton() {
         Button deleteAllButton = new Button("Delete");
         deleteAllButton.getStyleClass().add("menu-button");
-        keyField.getChildren().removeAll();
+        deleteAllButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                final List<Node> deleteKey = new ArrayList<>();
+                for(Node node : keyField.getChildren()) {
+                    if (node instanceof KeyViewImpl) {
+                        deleteKey.add(node);
+                    }
+                }
+                keyField.getChildren().removeAll(deleteKey);
+            }
+        });
         return deleteAllButton;
     }
     private void addAnotherField(VBox vBox, KeyViewModel viewModel) {
